@@ -1,6 +1,7 @@
 package me.leo.thejavatest;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
 
 import java.time.Duration;
 
@@ -8,6 +9,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
+
+	@Test
+	// @EnabledOnOs({OS.MAC, OS.WINDOWS})
+	// @EnabledOnJre({JRE.JAVA_9, JRE.JAVA_10})
+	// @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
+	public void create_new_study() throws Exception {
+		// 해당 환경 변수의 값을 가져온다.
+		// String test_env = System.getenv("TEST_ENV");
+		// System.out.println(test_env);
+		// 환경 변수의 값이 LOCAL 일 경우 아래 테스트 진행
+		// Assumptions.assumeTrue("LOCAL".equalsIgnoreCase(test_env));
+
+		Study study = new Study(10);
+		assertNotNull(study);
+
+//		Assumptions.assumingThat("LOCAL".equalsIgnoreCase(test_env), () -> {
+//			System.out.println("LOCAL");
+//			Study study = new Study(10);
+//			assertNotNull(study);
+//		});
+//
+//		Assumptions.assumingThat("DEV".equalsIgnoreCase(test_env), () -> {
+//			System.out.println("DEV");
+//			Study study = new Study(10);
+//			assertNotNull(study);
+//		});
+	}
 
 	@Test
 	@DisplayName("스터디 만들기 첫 번째")
