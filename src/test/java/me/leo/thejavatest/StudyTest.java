@@ -1,6 +1,8 @@
 package me.leo.thejavatest;
 
 import lombok.extern.slf4j.Slf4j;
+import me.leo.thejavatest.domain.Study;
+import me.leo.thejavatest.study.StudyStatus;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 
@@ -51,7 +53,8 @@ class StudyTest {
 			() -> assertNotNull(study),
 			() -> assertEquals(StudyStatus.DRAFT, study.getStatus(),
 					() -> "스터디를 처음 만들면 상태 값이 " + StudyStatus.DRAFT + " 상태다."),
-			() -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야 한다.")
+			() -> assertTrue(study.getLimitCount() > 0,
+					"스터디 최대 참석 가능 인원은 0보다 커야 한다.")
 		);
 	}
 
@@ -63,7 +66,8 @@ class StudyTest {
 		//when
 
 		//then
-		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> new Study(-10));
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+				() -> new Study(-10));
 		String message = ex.getMessage();
 		assertEquals("limit 은 0 보다 커야 한다.", message);
 	}
