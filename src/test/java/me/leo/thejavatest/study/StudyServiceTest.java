@@ -1,11 +1,22 @@
 package me.leo.thejavatest.study;
 
+import lombok.extern.slf4j.Slf4j;
 import me.leo.thejavatest.domain.Member;
 import me.leo.thejavatest.domain.Study;
 import me.leo.thejavatest.member.MemberService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.BDDMockito;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -18,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
 
@@ -152,5 +164,39 @@ class StudyServiceTest {
 		assertNotNull(openStudy.getOpenedDateTime());
 		// TODO: 2022-11-06 memberService 의 notify(study) 가 호출 됐는지 확인
 		BDDMockito.then(memberService).should(Mockito.times(1)).notify(openStudy);
+	}
+
+	@DisplayName("스터디 만들기")
+	@RepeatedTest(value = 10, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
+	void repeatTest(RepetitionInfo repetitionInfo) {
+		log.info("현재 테스트 반복 횟수 : " + repetitionInfo.getCurrentRepetition());
+		log.info("총 테스트 반복 횟수 : " + repetitionInfo.getTotalRepetitions());
+	}
+
+	@DisplayName("스터디 만들기")
+	@ParameterizedTest(name = "{index} {displayName} limit={0} message={1}")
+	// @ValueSource(strings = {"하나", "둘", "셋", "넷"})
+	// @ValueSource(ints = {10, 20, 40})
+	@CsvSource({"10, 'Java Study'", "20, 'Spring Study'"})
+	void parameterizedTest1(ArgumentsAccessor accessor) {
+		Study study = new Study(accessor.getInteger(0), accessor.getString(1));
+		log.info("limit = {}", study.getLimitCount());
+	}
+
+	@DisplayName("스터디 만들기")
+	@ParameterizedTest(name = "{index} {displayName} limit={0} message={1}")
+	@CsvSource({"10, 'Java Study'", "20, 'Spring Study'"})
+	void parameterizedTest2(ArgumentsAccessor accessor) {
+		Study study = new Study(accessor.getInteger(0), accessor.getString(1));
+		log.info("limit = {}", study.getLimitCount());
+		log.info("Name = {}", study.getName());
+	}
+
+	static class StudyConverter extends SimpleArgumentConverter {
+		@Override
+		protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+			assertEquals(Study.class, targetType, "Can only convert to Study");
+			return new Study(Integer.parseInt(source.toString()));
+		}
 	}
 }
