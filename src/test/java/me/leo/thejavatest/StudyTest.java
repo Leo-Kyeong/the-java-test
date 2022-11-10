@@ -12,7 +12,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+// @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StudyTest {
+
+	int value = 1;
+
+	@Test
+	void test1() {
+		System.out.println(this);
+		System.out.println(value++);
+	}
+
+	@Test
+	void test2() {
+		System.out.println(this);
+		System.out.println(value++);
+	}
 
 	@Test
 	@Disabled
